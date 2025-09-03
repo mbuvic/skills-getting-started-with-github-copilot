@@ -1,0 +1,19 @@
+from fastapi import FastAPI, Form
+
+app = FastAPI()
+
+activities = [
+    {"id": 1, "name": "Activity 1", "participants": []},
+    {"id": 2, "name": "Activity 2", "participants": []},
+    # ... other activities ...
+]
+
+@app.post("/api/activities/{activity_id}/signup")
+def signup_for_activity(activity_id: int, email: str = Form(...)):
+    for activity in activities:
+        if activity["id"] == activity_id:
+            if email in activity["participants"]:
+                return {"error": "Student already registered for this activity."}
+            activity["participants"].append(email)
+            return {"message": "Signup successful."}
+    return {"error": "Activity not found."}
